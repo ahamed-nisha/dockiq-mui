@@ -1,4 +1,5 @@
-import React, { useState } from "react"; // Use State import added for row expansion
+import React, { useState } from "react";
+import "./styles.css"; // Added for refresh animation
 import {
   Box,
   Typography,
@@ -42,14 +43,27 @@ const DockIQ = () => {
     },
   ];
 
+  // State management
   const [tabValue, setTabValue] = React.useState(0);
+  const [expandedRows, setExpandedRows] = useState({}); // For row expansion
+  const [isRefreshing, setIsRefreshing] = useState(false); // For refresh animation
 
+  // Event handlers
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  // Use State declaration for row expansion
-  const [expandedRows, setExpandedRows] = useState({});
+  // Refresh handler
+  /* When ready to make functional:
+      1. Add actual data fetching logic
+      2. Update container states
+      3. Connect to backend APIs when ready */
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsRefreshing(false);
+  };
 
   return (
     <Box
@@ -245,10 +259,13 @@ const DockIQ = () => {
         </Tabs>
       </Box>
 
-      {/* Refresh Button */}
+      {/* Refresh Button with Animation */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
         <Button
-          startIcon={<RefreshIcon />}
+          startIcon={
+            <RefreshIcon className={isRefreshing ? "animate-spin" : ""} />
+          }
+          onClick={handleRefresh}
           sx={{
             color: "text.secondary",
             textTransform: "none",
@@ -352,7 +369,7 @@ const DockIQ = () => {
                           borderRadius: 1,
                         }}
                       >
-                        {/* Expanded content */}
+                        {/* Expanded content goes here */}
                       </Box>
                     </TableCell>
                   </TableRow>
