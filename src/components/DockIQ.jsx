@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react"; // Use State import added for row expansion
 import {
   Box,
   Typography,
@@ -47,6 +47,9 @@ const DockIQ = () => {
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  // Use State declaration for row expansion
+  const [expandedRows, setExpandedRows] = useState({});
 
   return (
     <Box
@@ -284,46 +287,77 @@ const DockIQ = () => {
           </TableHead>
           <TableBody>
             {containers.map((container, index) => (
-              <TableRow
-                key={index}
-                hover
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell>{container.name}</TableCell>
-                <TableCell>
-                  <Chip
-                    label="Running"
-                    size="small"
-                    sx={{
-                      bgcolor: "rgba(46, 125, 50, 0.2)", // MUI's success background
-                      color: "#66bb6a", // MUI's success text
-                      fontWeight: 500,
-                      fontSize: "0.75rem",
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label="Warning"
-                    size="small"
-                    sx={{
-                      bgcolor: "rgba(237, 108, 2, 0.2)", // MUI's warning background
-                      color: "#ff9800", // MUI's warning text
-                      fontWeight: 500,
-                      fontSize: "0.75rem",
-                    }}
-                  />
-                </TableCell>
-                <TableCell>{container.memUsage}</TableCell>
-                <TableCell>{container.netIO}</TableCell>
-                <TableCell>{container.blockIO}</TableCell>
-                <TableCell>{container.pids}</TableCell>
-                <TableCell>
-                  <IconButton size="small" sx={{ color: "text.secondary" }}>
-                    <KeyboardArrowDownIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
+              <React.Fragment key={index}>
+                <TableRow
+                  hover
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell>{container.name}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label="Running"
+                      size="small"
+                      sx={{
+                        bgcolor: "rgba(46, 125, 50, 0.2)",
+                        color: "#66bb6a",
+                        fontWeight: 500,
+                        fontSize: "0.75rem",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label="Warning"
+                      size="small"
+                      sx={{
+                        bgcolor: "rgba(237, 108, 2, 0.2)",
+                        color: "#ff9800",
+                        fontWeight: 500,
+                        fontSize: "0.75rem",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>{container.memUsage}</TableCell>
+                  <TableCell>{container.netIO}</TableCell>
+                  <TableCell>{container.blockIO}</TableCell>
+                  <TableCell>{container.pids}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      size="small"
+                      onClick={() =>
+                        setExpandedRows((prev) => ({
+                          ...prev,
+                          [index]: !prev[index],
+                        }))
+                      }
+                      sx={{
+                        color: "text.secondary",
+                        transform: expandedRows[index]
+                          ? "rotate(180deg)"
+                          : "none",
+                        transition: "transform 0.2s",
+                      }}
+                    >
+                      <KeyboardArrowDownIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+                {expandedRows[index] && (
+                  <TableRow>
+                    <TableCell colSpan={8}>
+                      <Box
+                        sx={{
+                          p: 3,
+                          bgcolor: "background.paper",
+                          borderRadius: 1,
+                        }}
+                      >
+                        {/* Expanded content */}
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>
